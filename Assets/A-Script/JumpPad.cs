@@ -9,10 +9,10 @@ public class JumpPad : MonoBehaviour
     public bool jumpAfterPad;
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.gameObject.CompareTag("Player") && other.gameObject.GetComponent<Rigidbody2D>().velocity.y < 0)
+        if (other.gameObject.CompareTag("Player"))
         {
             anim.Play("PadJump");
-            other.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up*25, ForceMode2D.Impulse);
+            other.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up*30, ForceMode2D.Impulse);
             jumpAfterPad = true;
         }
     }

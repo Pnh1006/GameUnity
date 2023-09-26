@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class ObjectPool : MonoBehaviour
 {
-    public static ObjectPool instance;
+    public static ObjectPool instance; // Singleton : the hien
 
     private List<List<GameObject>> poolObjects = new List<List<GameObject>>();
     [SerializeField] private List<int> amountToPool = new List<int>();

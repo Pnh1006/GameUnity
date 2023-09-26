@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class Plant : EnemyBase
 {
-    
     protected override Vector2 Direction
     {
         get
@@ -19,6 +18,7 @@ public class Plant : EnemyBase
             }
         }
     }
+
 
     void Update()
     {
@@ -39,6 +39,4 @@ public class Plant : EnemyBase
         base.EnemyHurt();
         rg.constraints = RigidbodyConstraints2D.None;
     }
-    
-    
 }

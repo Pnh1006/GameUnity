@@ -2,6 +2,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -29,8 +31,17 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private JumpPad pad;
 
+    [SerializeField] private HealthBar healthBar;
+
+    [SerializeField] private GameObject life1;
+    [SerializeField] private GameObject life2;
+    [SerializeField] private GameObject life3;
+    [SerializeField] private Text CoinText;
+
+
     // [SerializeField] private TrailRenderer tr;
 
+    private int coins = 0;
     private float dirX = 0f;
 
     private bool isGrounded;
@@ -60,11 +71,14 @@ public class PlayerController : MonoBehaviour
     // public bool isHit = false;
     private bool canJump = true;
     private int countJumping = 0;
-    private int hp = 5;
+    public int hp = 3;
+    public int heart = 3;
 
-    // Start is called before the first frame update
+    private Vector2 checkPointPos;
+
     void Start()
     {
+        checkPointPos = transform.position;
     }
 
     // Update is called once per frame
@@ -74,7 +88,13 @@ public class PlayerController : MonoBehaviour
         Flip();
 
         // Double Jump
+        isWallU = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.up, .1f, groundLayer);
         isGrounded = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.down, .1f, groundLayer);
+        if (isWallU)
+        {
+            countJumping = 3;
+        }
+
         if (canJump)
         {
             DoubleJump();
@@ -82,15 +102,23 @@ public class PlayerController : MonoBehaviour
             {
                 countJumping = 0;
             }
+
+            if (countJumping == 0 && isFalling == true)
+            {
+                if (Input.GetButtonDown("Jump"))
+                {
+                    countJumping = 1;
+                    rg.velocity = new Vector2(rg.velocity.x, 17);
+                }
+            }
         }
 
         // Wall Slide
         isWallR = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.right, .1f, groundLayer);
         isWallL = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.left, .1f, groundLayer);
-        isWallU = Physics2D.BoxCast(coll.bounds.center, coll.bounds.size, 0f, Vector2.up, .1f, groundLayer);
         WallSlide();
         isWallCheck();
-        
+
         //JumpWall
         if (rg.velocity.y == -slideSpeed)
         {
@@ -115,9 +143,30 @@ public class PlayerController : MonoBehaviour
         {
             isWallL = false;
             isWallR = false;
+            isWallU = false;
         }
-        
+
         UpdateAnim();
+        healthBar.SetHealth(hp);
+        Hearts();
+    }
+
+    void Hearts()
+    {
+        if (heart == 2)
+        {
+            life3.SetActive(false);
+        }
+
+        if (heart == 1)
+        {
+            life2.SetActive(false);
+        }
+
+        if (heart == 0)
+        {
+            life1.SetActive(false);
+        }
     }
 
     private void FixedUpdate()
@@ -149,6 +198,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump"))
         {
+            // JumpSoundd();
             if (isGrounded || doubleJump)
             {
                 rg.velocity = new Vector2(rg.velocity.x, force);
@@ -162,10 +212,11 @@ public class PlayerController : MonoBehaviour
     {
         if (isWallR && rg.velocity.y < 0 && dirX != 0 || isWallL && rg.velocity.y < 0 && dirX != 0)
         {
-            if (rg.velocity.y < slideSpeed)
-            {
-                rg.velocity = new Vector2(rg.velocity.x, -slideSpeed);
-            }
+            // if (rg.velocity.y < slideSpeed)
+            // {
+            //     rg.velocity = new Vector2(rg.velocity.x, -slideSpeed);
+            // }
+            rg.velocity = new Vector2(rg.velocity.x, -slideSpeed);
         }
     }
 
@@ -184,8 +235,8 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAnim()
     {
-        if (dirX != 0 && isGrounded && !isWallL && !isWall && canRun ||
-            dirX != 0 && isGrounded && !isWallR && !isWall && canRun)
+        if (dirX != 0 && isGrounded && !isWallL && !isWall && canRun && !isWallU && !isHitting ||
+            dirX != 0 && isGrounded && !isWallR && !isWall && canRun && !isWallU && !isHitting)
         {
             anim.Play("Run");
             isRunning = true;
@@ -215,7 +266,7 @@ public class PlayerController : MonoBehaviour
             isFalling = false;
         }
 
-        if (isWall)
+        if (isWall && !isHitting)
         {
             anim.Play("WallSlide");
             isSliding = true;
@@ -230,15 +281,24 @@ public class PlayerController : MonoBehaviour
             anim.Play("Idle");
         }
 
-        if (countJumping > 0 && !isFalling && !isSliding)
+        if (countJumping > 0 && !isFalling && !isSliding && !isHitting)
         {
             anim.Play("DoubleJump");
         }
 
-        if (isHitting)
+        if (isHitting && hp > 0)
         {
             anim.Play("Hit");
         }
+        else if (isHitting && hp == 0)
+        {
+            anim.Play("Dead");
+        }
+    }
+
+    void HP()
+    {
+        hp--;
     }
 
 
@@ -249,7 +309,6 @@ public class PlayerController : MonoBehaviour
             countJumping = 0;
             if (isFalling && transform.position.y - other.transform.position.y > 1)
             {
-                // isHit = true;
                 rg.velocity = new Vector2(rg.velocity.x, 10);
                 other.gameObject.GetComponent<EnemyBase>().EnemyHurt();
                 return;
@@ -257,12 +316,12 @@ public class PlayerController : MonoBehaviour
 
             if (transform.position.x < other.transform.position.x)
             {
-                rg.velocity = new Vector2(-7, 10);
+                rg.velocity = new Vector2(-10, 10);
                 isHitting = true;
             }
             else
             {
-                rg.velocity = new Vector2(7, 10);
+                rg.velocity = new Vector2(10, 10);
                 isHitting = true;
             }
 
@@ -273,10 +332,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Spikes"))
         {
+            // GetDmgSoundd();
             countJumping = 0;
             if (sprite.flipX == false)
             {
@@ -293,6 +354,11 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(WaitStun2(0.3f));
             jumpAfterTrap = true;
         }
+        if (other.gameObject.CompareTag("Fruits"))
+        {
+            coins++;
+            CoinText.text = "" + coins;
+        }
     }
 
     private IEnumerator WaitStun(float waitTime)
@@ -306,5 +372,48 @@ public class PlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(waitTime);
         isHitting = false;
+    }
+
+    void Die()
+    {
+        if (hp == 0)
+        {
+            StartCoroutine(CheckPoint(0.5f));
+            heart--;
+        }
+
+        if (heart == 0)
+        {
+            StartLevel();
+        }
+    }
+
+    private void StartLevel()
+    {
+        StartCoroutine(Load(0.5f));
+    }
+
+    public void UpdateCheckPoint(Vector2 pos)
+    {
+        checkPointPos = pos;
+    }
+
+    private IEnumerator CheckPoint(float waitTime)
+    {
+        rg.velocity = new Vector2(0, 0);
+        rg.simulated = false;
+        transform.localScale = new Vector3(0, 0, 0);
+        yield return new WaitForSeconds(waitTime);
+        transform.position = checkPointPos;
+        transform.localScale = new Vector3(1, 1, 1);
+        rg.simulated = true;
+        hp = 3;
+        healthBar.SetHealth(hp);
+    }
+
+    private IEnumerator Load(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

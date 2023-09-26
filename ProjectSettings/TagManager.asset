@@ -11,11 +11,15 @@ TagManager:
   - Ground
   - Bee
   - Plant
+  - Turn1
+  - Turn2
+  - Turn3
+  - Turn4
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Ground

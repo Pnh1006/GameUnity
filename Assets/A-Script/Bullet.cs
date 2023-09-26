@@ -6,12 +6,12 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     // Start is called before the first frame update
-    private float speed = 10f;
+    private float speedBullet = 10f;
     [SerializeField] private Rigidbody2D rg;
     
     public void Fire(Vector2 direction)
     {
-        rg.velocity = direction * speed;
+        rg.velocity = direction * speedBullet;
     }
     
     private void OnTriggerEnter2D(Collider2D other)
@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
+    
     
   
 }

@@ -10,20 +10,29 @@ public class EnemyBase : MonoBehaviour
     protected bool isRunning;
     protected bool isMoving = true;
     protected float Espeed;
+    protected float distToPlayer;
+    protected Vector2 iniPos;
+
+    [SerializeField] private int indexFlip;
 
     [SerializeField] protected int indexBullet;
     [SerializeField] protected SpriteRenderer sprite;
-    [SerializeField] private Transform player;
-    [SerializeField] private float distCheck;
+    [SerializeField] protected Transform player;
+    [SerializeField] protected float distCheck;
     [SerializeField] protected Animator anim;
-
     [SerializeField] protected Transform bulletPosition;
-
     [SerializeField] private Vector2 direction;
+    [SerializeField] protected Transform turn1;
+    [SerializeField] protected Transform turn2;
 
     protected virtual Vector2 Direction => direction;
 
-    public bool isDead = false;
+    public bool isDead;
+
+    private void Start()
+    {
+        iniPos = transform.position;
+    }
 
     public virtual void EnemyHurt()
     {
@@ -52,15 +61,31 @@ public class EnemyBase : MonoBehaviour
     {
         if (isMoving)
         {
-            if (isMovingR)
+            if (indexFlip % 2 == 0)
             {
-                sprite.flipX = true;
-                rg.velocity = new Vector2(speed, rg.velocity.y);
+                if (isMovingR)
+                {
+                    sprite.flipX = true;
+                    rg.velocity = new Vector2(speed, rg.velocity.y);
+                }
+                else
+                {
+                    sprite.flipX = false;
+                    rg.velocity = new Vector2(-speed, rg.velocity.y);
+                }
             }
             else
             {
-                sprite.flipX = false;
-                rg.velocity = new Vector2(-speed, rg.velocity.y);
+                if (isMovingR)
+                {
+                    sprite.flipX = false;
+                    rg.velocity = new Vector2(-speed, rg.velocity.y);
+                }
+                else
+                {
+                    sprite.flipX = true;
+                    rg.velocity = new Vector2(speed, rg.velocity.y);
+                }
             }
         }
 
@@ -69,19 +94,35 @@ public class EnemyBase : MonoBehaviour
 
     public virtual void DistToPlayer()
     {
-        float distToPlayer = Vector2.Distance(transform.position, player.position);
+        distToPlayer = Vector2.Distance(transform.position, player.position);
         if (distToPlayer < distCheck && (player.position.y - transform.position.y >= 0) &&
-            (player.position.y - transform.position.y <= 1))
+            (player.position.y - transform.position.y <= 1) && player.position.x > turn1.position.x &&
+            player.position.x < turn2.position.x)
         {
             isRunning = true;
-            if (player.position.x < transform.position.x)
+            if (indexFlip % 2 == 0)
             {
-                isMovingR = false;
+                if (player.position.x < transform.position.x)
+                {
+                    isMovingR = false;
+                }
+                else
+                {
+                    isMovingR = true;
+                }
             }
             else
             {
-                isMovingR = true;
+                if (player.position.x < transform.position.x)
+                {
+                    isMovingR = true;
+                }
+                else
+                {
+                    isMovingR = false;
+                }
             }
+
 
             EnemyMoving(4f);
         }
@@ -110,17 +151,26 @@ public class EnemyBase : MonoBehaviour
         }
     }
 
-    public void Dead()
-    {
-        gameObject.SetActive(false);
-    }
+   
 
     protected IEnumerator WaitStunDead()
     {
         yield return new WaitForSeconds(0.5f);
-        Dead();
+        gameObject.SetActive(false);
+        // sprite.color = Color.clear;
+        // StartCoroutine(Respawn(5f));
     }
+    
+    // protected IEnumerator Respawn(float waitTime)
+    // {
+    //     yield return new WaitForSeconds(waitTime);
+    //     transform.position = iniPos;
+    //     gameObject.GetComponent<Collider2D>().enabled = true;
+    //     sprite.color = Color.white;
+    //     isDead = false;
+    // }
 
+    /// Ham nay goi trong event
     public virtual void Fire()
     {
         Bullet bullet = ObjectPool.instance.GetPoolObject(indexBullet).GetComponent<Bullet>();
