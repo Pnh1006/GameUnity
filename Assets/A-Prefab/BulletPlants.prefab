@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 359140869031868708}
   - component: {fileID: 359140869031868710}
   - component: {fileID: 359140869031868711}
-  - component: {fileID: 4098293039682827647}
+  - component: {fileID: -1619697144160419404}
   m_Layer: 0
   m_Name: BulletPlants
   m_TagString: Spikes
@@ -122,7 +122,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.21
---- !u!114 &4098293039682827647
+--- !u!114 &-1619697144160419404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 359140869031868705}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e1d16bdf31210d49adfadb1ccf4bb6d, type: 3}
+  m_Script: {fileID: 11500000, guid: e6a14f8ac86943aab61089e30f075eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   rg: {fileID: 359140869031868710}

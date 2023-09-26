@@ -15,7 +15,7 @@ public class EnemyBase : MonoBehaviour
 
     [SerializeField] private int indexFlip;
 
-    [SerializeField] protected int indexBullet;
+    [SerializeField] protected string nameBullet;
     [SerializeField] protected SpriteRenderer sprite;
     [SerializeField] protected Transform player;
     [SerializeField] protected float distCheck;
@@ -173,7 +173,7 @@ public class EnemyBase : MonoBehaviour
     /// Ham nay goi trong event
     public virtual void Fire()
     {
-        Bullet bullet = ObjectPool.instance.GetPoolObject(indexBullet).GetComponent<Bullet>();
+        Bullet bullet = ObjectPool.instance.GetPoolObject(nameBullet).GetComponent<Bullet>();
         if (bullet != null)
         {
             bullet.transform.position = bulletPosition.position;

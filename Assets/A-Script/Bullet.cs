@@ -18,10 +18,14 @@ public class Bullet : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Ground") || other.gameObject.CompareTag("Player"))
         {
+            SpawnPiece();
             gameObject.SetActive(false);
         }
     }
+
+    protected virtual void SpawnPiece()
+    {
+        
+    }
     
-    
-  
 }

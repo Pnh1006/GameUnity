@@ -156,13 +156,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rg: {fileID: 8952804701962660451}
-  indexBullet: 1
+  indexFlip: 0
+  nameBullet: PlantBullet
   sprite: {fileID: 8952804701962660453}
   player: {fileID: 0}
   distCheck: 0
   anim: {fileID: 8952804701962660450}
   bulletPosition: {fileID: 8952804702631349407}
   direction: {x: -1, y: 0}
+  turn1: {fileID: 0}
+  turn2: {fileID: 0}
   isDead: 0
 --- !u!1 &8952804702631349404
 GameObject:

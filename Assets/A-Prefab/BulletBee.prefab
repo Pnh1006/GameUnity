@@ -10,10 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7306264710955819139}
   - component: {fileID: 3447355093619190046}
-  - component: {fileID: 2938036126887725717}
   - component: {fileID: 1632452785196945553}
   - component: {fileID: 7246738017368686012}
   - component: {fileID: 7867503739633821704}
+  - component: {fileID: 1045543637711738608}
   m_Layer: 0
   m_Name: BulletBee
   m_TagString: Spikes
@@ -86,19 +86,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2938036126887725717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6761346820641144033}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e1d16bdf31210d49adfadb1ccf4bb6d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rg: {fileID: 7867503739633821704}
 --- !u!70 &1632452785196945553
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -155,3 +142,16 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &1045543637711738608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6761346820641144033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 876ac22c0e594deb902a9599ddfe56c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rg: {fileID: 7867503739633821704}
